@@ -1,0 +1,278 @@
+
+<!doctype html>
+<html>
+<head>
+    <title>Zoom Virtual Background Generator | Columbia BUsiness School</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <meta charset="utf-8" />
+    <script src="canvas2image.js"></script>
+    <link rel="stylesheet" href="https://use.typekit.net/uwc5dga.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+    <img src="logo-cbs-haas-stacked.svg" class="logo-header" alt="the logo of Columbia Business School">
+</header>
+
+<div class="doc">
+    <h1>Zoom Virtual<br/>Background Generator</h1>
+
+    <canvas width="1920" height="1080" id="cvshd"></canvas>
+    <canvas width="1600" height="1200" id="cvs"></canvas>
+
+    <p>
+        This tool has been created to enable students to generate an approved virtual background to use in classroom Zoom sessions.
+    </p>
+    <p> 
+        Your name is intended to be highly visible even when other participants are using a grid like view of the classroom.  
+        When using this background please situate yourself in such a way to minimize overlap with the name, which will always stay in a minimal one-third area of the top right corner of your screen.
+    </p>
+    <p>
+        <strong>Note:</strong> it does not matter if you use the "Mirror" option within Zoom.  The text will always display correctly to other participants.
+    </p>
+
+    <div>
+        <form>
+            <label>
+                First Name
+                <input type="text" id="first" placeholder="First Name" tabindex="1">
+            </label>
+            <label>
+                Last Name
+                <input type="text" id="last" placeholder="Last Name" tabindex="2">
+            </label>
+            <div id="ratioOptions">
+                <input type="radio" id="optionHD" name="imageStyle" value="HD" checked="checked">
+                <label for="optionHD">HD</label>
+                <input type="radio" id="option43" name="imageStyle" value="43">
+                <label for="option43">4:3</label>
+                <div id="ratioTooltip">Leave the ratio as HD by default.  ONLY choose 4:3 if you are  
+                                       using the lower ratio video in Zoom and your name is being cut off.
+                </div>
+           </div>
+            
+            <div id="imgs" width="800" height="600"></div>
+
+           <div class="submit-buttom">
+                <button id="createimage" class="action--download a-btn a-btn--primary" tabindex="3">
+                    Save Image
+                    <span class="a-icon  a-btn__icon">
+                        <svg class="icon--action--download icon" role="img" idth="24" height="24" viewBox="0 0 24 24">
+                            <path d="M11 12H7.99999L12 16L16 12L13 12L13 4L11 4L11 12Z"/>
+                            <path d="M6 18H18L18 20L6 20L6 18Z"/>
+                        </svg>
+                    </span>
+                </button>
+            </div>
+           
+            </form>
+    </div>
+
+    <div id="explanation" style="display:none">
+        <p>
+        After you are happy with your new virtual background use the "Save" button to save it to your local machine. Set it as your virtual background in your Zoom settings. 
+        </p>
+    </div>
+    <a id="downloadlink" download="zoombackground.jpg" href="">Download Background</a>
+
+
+    
+<img src="img-mark-hermes.svg" style="display:none;" id="mark"> 
+</div>
+<script>
+    var canvas, canvashd, ctxorig, ctxhd,
+        $createhd, $createorig, $createimage, $optionHD, $option43,
+        $imgs,
+        $placeLeft, $placeRight,
+        $nameTxt, $first, $last,
+        $radialParm;
+
+
+
+    function init () {
+        canvas = document.getElementById('cvs');
+        canvashd = document.getElementById('cvshd');
+
+
+        ctxorig = canvas.getContext('2d');
+        ctxhd = canvashd.getContext('2d');
+
+       
+        $createimage = document.getElementById('createimage');
+        $optionHD = document.getElementById('optionHD');
+        $option43 = document.getElementById('option43');
+
+
+        $imgs = document.getElementById('imgs');
+
+        $first =document.getElementById('first');
+        $last = document.getElementById('last');
+
+
+        var queryString = window.location.search;
+        var urlParams = new URLSearchParams(queryString);
+        var firstVal  = urlParams.get('first');
+        var lastVal = urlParams.get('last');
+        $radialParm = urlParams.get('r');
+
+        if (firstVal){$first.value = firstVal};
+        if (lastVal){$last.value = lastVal};
+
+
+        bind();
+
+        if (firstVal && lastVal){
+            updateImage();
+        }
+    }
+
+
+    function drawHD(){
+        draw(ctxhd, 1920, 1080);
+            document.getElementById('explanation').style="display:block";
+
+            var type = 'jpg',
+                w = 1920,
+                h = 1080;
+            $imgs.innerHTML = '';
+            $imgs.appendChild(Canvas2Image.convertToImage(canvashd, w, h, type))
+    }
+
+
+    function draw43(){
+        draw(ctxorig, 1600, 1200);
+            document.getElementById('explanation').style="display:block";
+
+
+            var type = 'jpg',
+                w = 1600,
+                h = 1200;
+            $imgs.innerHTML = '';
+            $imgs.appendChild(Canvas2Image.convertToImage(canvas, w, h, type))
+    }   
+
+    function updateImage(){
+        if ($optionHD.checked){
+            drawHD();
+        }else{
+            draw43();
+        }
+
+    }
+
+
+    function bind () {
+
+        $createimage.onclick = function (e) {
+            updateImage();
+            if ($optionHD.checked){
+                Canvas2Image.saveAsImage(canvashd, 1920, 1080, 'jpg');
+            }else {
+                Canvas2Image.saveAsImage(canvas, 1600, 1200, 'jpg');
+
+            }
+        }
+
+        $last.oninput = function (e) {
+            updateImage();
+        } 
+        $first.oninput = function (e) {
+            updateImage();
+        }
+
+        $option43.oninput = function (e) {
+            updateImage();
+        }
+        $optionHD.oninput = function (e) {
+            updateImage();
+        }
+
+
+    }
+
+
+
+    function draw(ctx, w, h) {
+
+        // simplified version, but does first name bigger
+
+        // another option, "spotlight" radial gradient
+        var radialGrd = ctx.createRadialGradient(w/2, h*.9, 400, w/2, h*.9, h);
+        radialGrd.addColorStop(0, "#89939c"); // grey
+        radialGrd.addColorStop(1, "#42474c"); // jefferson blue
+
+        ctx.fillStyle = radialGrd;
+        ctx.fillRect(0,0,w,h);
+
+
+        
+        ctx.fillStyle = '#ffffff';
+        ctx.font = "bold 150px 'neue-haas-grotesk-display','Helvetica Neue',helvetica,sans-serif";
+
+        var rightMargin = 40;
+        var topMargin = 0;
+        var verticalLineWidth = 8;
+        
+        var firstMeasurement = ctx.measureText($first.value).width;
+
+        // last name will be smaller
+        ctx.font = "bold 100px 'neue-haas-grotesk-display','Helvetica Neue',helvetica,sans-serif";
+
+        var lastMeasurement = ctx.measureText($last.value).width;
+        var maxWidth = firstMeasurement > lastMeasurement ? firstMeasurement : lastMeasurement;
+
+        var firstLineBase = 160;
+        var secondLineBase = 280;
+
+        ctx.fillStyle = '#009bdb'; // cbs blue
+        ctx.fillRect(w - maxWidth - rightMargin, topMargin, 160, 14);
+
+        ctx.fillStyle = '#ffffff';
+
+        // if we only have a first name then we will just use one line
+        if ($last.value.length == 0){
+            ctx.font = "600 150px 'neue-haas-grotesk-display','Helvetica Neue',helvetica,sans-serif";
+            ctx.fillText($first.value, w - maxWidth - rightMargin, firstLineBase, maxWidth );
+
+        }else{
+
+           ctx.font = "600 150px 'neue-haas-grotesk-display','Helvetica Neue',helvetica,sans-serif";
+
+            ctx.fillText($first.value, w - maxWidth - rightMargin, firstLineBase, maxWidth );
+            ctx.font = "bold 100px 'neue-haas-grotesk-display','Helvetica Neue',helvetica,sans-serif";
+
+            ctx.fillText($last.value,  w - maxWidth - rightMargin, secondLineBase, maxWidth );
+           
+        }
+		
+		var img = document.getElementById("mark");
+		ctx.drawImage(img, 40, 690, 350, 350);
+ 
+    }
+
+    
+
+    
+    
+    
+    onload = init;
+</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"rayId":"5b3e7a41384ce6e0","version":"2020.6.0","si":10}'></script>
+</body>
+</html>
