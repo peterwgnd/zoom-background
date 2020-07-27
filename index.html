@@ -57,10 +57,10 @@
                 <input type="text" id="last" placeholder="Last Name" tabindex="2">
             </label>
              <label>
-                Gender Pronouns
+                Gender Pronouns (optional)
                 <div class="plus-icon">
                 <select name="pronouns" id="pronouns">
-                    <option disabled selected value>Optionally select your pronouns.</option>
+                    <option disabled selected value>Select your pronouns.</option>
                     <option value="She/Her/Hers">She/Her/Hers</option>
                     <option value="He/Him/His">He/Him/His</option>
                     <option value="They/Them/Theirs">They/Them/Theirs</option>
@@ -252,6 +252,10 @@
         var lastMeasurement = ctx.measureText($last.value).width;
         var maxWidth = firstMeasurement > lastMeasurement ? firstMeasurement : lastMeasurement;
 
+        ctx.font = "bold 60px 'neue-haas-grotesk-display','Helvetica Neue',helvetica,sans-serif";
+        var genderMeasurement = ctx.measureText($pronouns.options[$pronouns.selectedIndex].value).width;
+        maxWidth = maxWidth > genderMeasurement ? maxWidth : genderMeasurement;
+
         var firstLineBase = 160;
         var secondLineBase = 260;
         var thirdLineBase = 360;
@@ -278,7 +282,7 @@
         }
 
         if ($pronouns.selectedIndex > -1) {
-            ctx.font = "bold 60px 'neue-haas-grotesk-display','Helvetica Neue',helvetica,sans-serif";
+            ctx.font = "600 60px 'neue-haas-grotesk-display','Helvetica Neue',helvetica,sans-serif";
             ctx.fillText($pronouns.options[$pronouns.selectedIndex].value,  w - maxWidth - rightMargin, thirdLineBase, maxWidth );
         }
 		
