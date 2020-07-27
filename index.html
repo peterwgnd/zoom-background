@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html>
 <head>
@@ -57,6 +56,16 @@
                 Last Name
                 <input type="text" id="last" placeholder="Last Name" tabindex="2">
             </label>
+             <label>
+                Gender Pronouns
+                <select name="pronouns" id="pronouns">
+                    <option disabled selected value>Optionally select your pronouns.</option>
+                    <option value="She/Her/Hers">She/Her/Hers</option>
+                    <option value="He/Him/His">He/Him/His</option>
+                    <option value="They/Them/Theirs">They/Them/Theirs</option>
+                    <option value="Ze/Hir/Hirs">Ze/Hir/Hirs</option>
+                </select>
+            </label>
             <div id="ratioOptions">
                 <input type="radio" id="optionHD" name="imageStyle" value="HD" checked="checked">
                 <label for="optionHD">HD</label>
@@ -73,7 +82,7 @@
                 <button id="createimage" class="action--download a-btn a-btn--primary" tabindex="3">
                     Save Image
                     <span class="a-icon  a-btn__icon">
-                        <svg class="icon--action--download icon" role="img" idth="24" height="24" viewBox="0 0 24 24">
+                        <svg class="icon--action--download icon" role="img" width="24" height="24" viewBox="0 0 24 24">
                             <path d="M11 12H7.99999L12 16L16 12L13 12L13 4L11 4L11 12Z"/>
                             <path d="M6 18H18L18 20L6 20L6 18Z"/>
                         </svg>
@@ -100,7 +109,7 @@
         $createhd, $createorig, $createimage, $optionHD, $option43,
         $imgs,
         $placeLeft, $placeRight,
-        $nameTxt, $first, $last,
+        $nameTxt, $first, $last, $pronouns,
         $radialParm;
 
 
@@ -123,7 +132,7 @@
 
         $first =document.getElementById('first');
         $last = document.getElementById('last');
-
+        $pronouns = document.getElementById('pronouns');
 
         var queryString = window.location.search;
         var urlParams = new URLSearchParams(queryString);
@@ -195,6 +204,9 @@
         $first.oninput = function (e) {
             updateImage();
         }
+        $pronouns.onchange = function (e) {
+            updateImage();
+        }
 
         $option43.oninput = function (e) {
             updateImage();
@@ -238,7 +250,8 @@
         var maxWidth = firstMeasurement > lastMeasurement ? firstMeasurement : lastMeasurement;
 
         var firstLineBase = 160;
-        var secondLineBase = 280;
+        var secondLineBase = 260;
+        var thirdLineBase = 360;
 
         ctx.fillStyle = '#009bdb'; // cbs blue
         ctx.fillRect(w - maxWidth - rightMargin, topMargin, 160, 14);
@@ -259,6 +272,11 @@
 
             ctx.fillText($last.value,  w - maxWidth - rightMargin, secondLineBase, maxWidth );
            
+        }
+
+        if ($pronouns.selectedIndex > -1) {
+            ctx.font = "bold 60px 'neue-haas-grotesk-display','Helvetica Neue',helvetica,sans-serif";
+            ctx.fillText($pronouns.options[$pronouns.selectedIndex].value,  w - maxWidth - rightMargin, thirdLineBase, maxWidth );
         }
 		
 		var img = document.getElementById("mark");

@@ -93,7 +93,8 @@ label {
     font-weight: 600;
 }
 
-input[type=text] {
+input[type=text],
+select {
     all: unset;
     display: block;
     font-family: 'neue-haas-grotesk-display', 'Helvetica Neue', helvetica, sans-serif;
@@ -106,12 +107,23 @@ input[type=text] {
     max-width: 600px;
 }
 
-input[type=text]:focus {
+input[type=text]:focus,
+select:focus {
     border-bottom-color: #009bdb;
 }
 
-input[type=text]:hover {
+input[type=text]:hover,
+select:hover {
     border-bottom-color: #181a1c;
+}
+
+select {
+    display: flex;
+    align-items: flex-end;
+}
+
+select:after {
+    content: "+";
 }
 
 body {
