@@ -252,6 +252,10 @@
         var lastMeasurement = ctx.measureText($last.value).width;
         var maxWidth = firstMeasurement > lastMeasurement ? firstMeasurement : lastMeasurement;
 
+        ctx.font = "bold 60px 'neue-haas-grotesk-display','Helvetica Neue',helvetica,sans-serif";
+        var genderMeasurement = ctx.measureText($pronouns.options[$pronouns.selectedIndex].value).width;
+        maxWidth = maxWidth > genderMeasurement ? maxWidth : genderMeasurement;
+
         var firstLineBase = 160;
         var secondLineBase = 260;
         var thirdLineBase = 360;
@@ -278,7 +282,7 @@
         }
 
         if ($pronouns.selectedIndex > -1) {
-            ctx.font = "bold 60px 'neue-haas-grotesk-display','Helvetica Neue',helvetica,sans-serif";
+            ctx.font = "600 60px 'neue-haas-grotesk-display','Helvetica Neue',helvetica,sans-serif";
             ctx.fillText($pronouns.options[$pronouns.selectedIndex].value,  w - maxWidth - rightMargin, thirdLineBase, maxWidth );
         }
 		
