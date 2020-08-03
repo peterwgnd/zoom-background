@@ -70,6 +70,7 @@ canvas {
 
 .a-btn--primary {
     background-color: #181a1c;
+    -webkit-text-fill-color:#fff;
     color: white;
     position: relative;
     border: 2px solid #181a1c;
