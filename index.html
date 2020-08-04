@@ -69,6 +69,16 @@
                 <span>+</span>
                 </div>
             </label>
+            <label>
+                Background Color
+                <div class="plus-icon">
+                <select name="bacgkround" id="background">
+                    <option selected value="Dark">Dark</option>
+                    <option value="Light">Light</option>
+                </select>
+                <span>+</span>
+                </div>
+            </label>
             <div id="ratioOptions">
                 <input type="radio" id="optionHD" name="imageStyle" value="HD" checked="checked">
                 <label for="optionHD">HD</label>
@@ -78,6 +88,11 @@
                                        using the lower ratio video in Zoom and your name is being cut off.
                 </div>
            </div>
+
+           <div id="explanation" style="display:none">
+                <p>After you are happy with your new virtual background use the "Save" button below to save it to your local machine. Set it as your virtual background in your Zoom settings.</p>
+                <p><strong>Note:</strong> if you are using Safari and experience trouble with the save button, you can also right click on the image to save it.</p>
+            </div>
             
             <div id="imgs" width="800" height="600"></div>
 
@@ -96,23 +111,18 @@
             </form>
     </div>
 
-    <div id="explanation" style="display:none">
-        <p>
-        After you are happy with your new virtual background use the "Save" button to save it to your local machine. Set it as your virtual background in your Zoom settings. 
-        </p>
-    </div>
     <a id="downloadlink" download="zoombackground.jpg" href="">Download Background</a>
 
 
     
-<img src="img-mark-hermes.svg" style="display:none;" id="mark"> 
+<img src="img-mark-hermes.png" style="display:none;" id="mark"> 
 </div>
 <script>
     var canvas, canvashd, ctxorig, ctxhd,
         $createhd, $createorig, $createimage, $optionHD, $option43,
         $imgs,
         $placeLeft, $placeRight,
-        $nameTxt, $first, $last, $pronouns,
+        $nameTxt, $first, $last, $pronouns, $background,
         $radialParm;
 
 
@@ -136,6 +146,7 @@
         $first =document.getElementById('first');
         $last = document.getElementById('last');
         $pronouns = document.getElementById('pronouns');
+        $background = document.getElementById('background');
 
         var queryString = window.location.search;
         var urlParams = new URLSearchParams(queryString);
@@ -188,7 +199,6 @@
 
     }
 
-
     function bind () {
 
         $createimage.onclick = function (e) {
@@ -211,6 +221,10 @@
             updateImage();
         }
 
+        $background.onchange = function (e) {
+            updateImage();
+        }
+
         $option43.oninput = function (e) {
             updateImage();
         }
@@ -221,24 +235,22 @@
 
     }
 
-
-
     function draw(ctx, w, h) {
 
-        // simplified version, but does first name bigger
+        ctx.font = "bold 150px 'neue-haas-grotesk-display','Helvetica Neue',helvetica,sans-serif";
 
-        // another option, "spotlight" radial gradient
         var radialGrd = ctx.createRadialGradient(w/2, h*.9, 400, w/2, h*.9, h);
-        radialGrd.addColorStop(0, "#89939c"); // grey
-        radialGrd.addColorStop(1, "#42474c"); // jefferson blue
+
+        if($background.selectedIndex == 1) {
+            radialGrd.addColorStop(0, "#f1f4f7"); 
+            radialGrd.addColorStop(1, "#bec7d0");
+        } else {
+            radialGrd.addColorStop(0, "#89939c"); // grey
+            radialGrd.addColorStop(1, "#42474c");
+        }
 
         ctx.fillStyle = radialGrd;
         ctx.fillRect(0,0,w,h);
-
-
-        
-        ctx.fillStyle = '#ffffff';
-        ctx.font = "bold 150px 'neue-haas-grotesk-display','Helvetica Neue',helvetica,sans-serif";
 
         var rightMargin = 40;
         var topMargin = 0;
@@ -263,7 +275,11 @@
         ctx.fillStyle = '#009bdb'; // cbs blue
         ctx.fillRect(w - maxWidth - rightMargin, topMargin, 160, 14);
 
-        ctx.fillStyle = '#ffffff';
+        if($background.selectedIndex == 1) {
+            ctx.fillStyle = '#181a1c';
+        } else {
+             ctx.fillStyle = '#ffffff';
+        }
 
         // if we only have a first name then we will just use one line
         if ($last.value.length == 0){
