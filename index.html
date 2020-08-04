@@ -88,6 +88,11 @@
                                        using the lower ratio video in Zoom and your name is being cut off.
                 </div>
            </div>
+
+           <div id="explanation" style="display:none">
+                <p>After you are happy with your new virtual background use the "Save" button below to save it to your local machine. Set it as your virtual background in your Zoom settings.</p>
+                <p><strong>Note:</strong> if you are using Safari and experience trouble with the save button, you can also right click on the image to save it.</p>
+            </div>
             
             <div id="imgs" width="800" height="600"></div>
 
@@ -106,16 +111,11 @@
             </form>
     </div>
 
-    <div id="explanation" style="display:none">
-        <p>
-        After you are happy with your new virtual background use the "Save" button to save it to your local machine. Set it as your virtual background in your Zoom settings. 
-        </p>
-    </div>
     <a id="downloadlink" download="zoombackground.jpg" href="">Download Background</a>
 
 
     
-<img src="img-mark-hermes.svg" style="display:none;" id="mark"> 
+<img src="img-mark-hermes.png" style="display:none;" id="mark"> 
 </div>
 <script>
     var canvas, canvashd, ctxorig, ctxhd,
@@ -242,8 +242,8 @@
         var radialGrd = ctx.createRadialGradient(w/2, h*.9, 400, w/2, h*.9, h);
 
         if($background.selectedIndex == 1) {
-            radialGrd.addColorStop(0, "#ffffff"); 
-            radialGrd.addColorStop(1, "#f1f4f7");
+            radialGrd.addColorStop(0, "#f1f4f7"); 
+            radialGrd.addColorStop(1, "#bec7d0");
         } else {
             radialGrd.addColorStop(0, "#89939c"); // grey
             radialGrd.addColorStop(1, "#42474c");
